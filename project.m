@@ -1,0 +1,31 @@
+% 1. Select an appropriate discretization level for your data.
+t_over_T = 0.001:0.001:1; % 0.001 discretization level for now (1000 points)
+f_m = 0.5; %hz
+f_c = 4.*((t_over_T).^2);
+% pure signal:
+A_over_A_0 = (sin(2.*pi.*f_m*t_over_T).^2).*abs((sin(2.*pi.*f_c.*t_over_T)));
+
+plot(t_over_T, A_over_A_0)
+
+% white noise:
+
+% "random vector is considered to be a white noise vector if its 
+% components each have a probability distribution with zero mean and 
+% finite variance"
+
+
+% 2. Select a (known) noise function N(t/T) and determine its PDF.
+
+e1_noise_numbers = randn([1 length(t_over_T)]); % zero-mean guassian noise for e_1
+e2_noise_numbers = randn([1 length(t_over_T)]); % zero-mean guassian noise for e_1
+% TODO maybe switch to something that I can use to specify more directly
+% the PDF arguments?
+
+
+% A_affected = A~ which is the noise-ily scaled and noise-ily offset signal
+
+a_1 = 0.2;
+a_2 = 0.46;
+A_affected = (1 + a_1.*e1_noise_numbers.*(t_over_T)).*(A_over_A_0) + (a_2.*e2_noise_numbers.*(t_over_T));
+
+plot(t_over_T, A_affected)
