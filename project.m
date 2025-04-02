@@ -18,8 +18,11 @@ plot(t_over_T, A_over_A_0)
 
 e1_noise_numbers = randn([1 length(t_over_T)]); % zero-mean guassian noise for e_1
 e2_noise_numbers = randn([1 length(t_over_T)]); % zero-mean guassian noise for e_1
+
 % TODO maybe switch to something that I can use to specify more directly
 % the PDF arguments?
+
+% TODO use hmwk1 function to get the PDF
 
 
 % A_affected = A~ which is the noise-ily scaled and noise-ily offset signal
@@ -29,3 +32,40 @@ a_2 = 0.46;
 A_affected = (1 + a_1.*e1_noise_numbers.*(t_over_T)).*(A_over_A_0) + (a_2.*e2_noise_numbers.*(t_over_T));
 
 plot(t_over_T, A_affected)
+
+% goodness of fit: 
+% normalized root mean squared error (comparison between different sensor ranges)
+
+% root mean squared vs MSE: RMS is provided in the same unit as the target
+% variable units(A/A_0)
+
+% chosen goodness of fit: RMSE, due to not needing different sensor range
+% comparisons, only one sensor response goodness of fit.
+% RMSE goal 0.01 (1/100th of the scale of the "measured" signal)
+
+% before noise
+
+% each needs several different ranges of polynomial degrees
+for poly_fit_deg = 1:10
+    A_global_fit = global_fit(A_over_A_0, t_over_T, poly_fit_deg);
+    A_piecewise_fit = piecewise_fit(A_over_A_0, t_over_T, poly_fit_deg);
+    A_optimal_fit = optimal_fit(A_over_A_0, t_over_T, poly_fit_deg);
+
+    global_res_clean = eval_fit(A_global_fit, A_over_A_0);
+    piecewise_res_clean = eval_fit(A_piecewise_fit, A_over_A_0);
+    optimal_res_clean = eval_fit(A_optimal_fit, A_over_A_0);
+
+% repeating for noisy data
+    A_global_fit = global_fit(A_over_A_0, t_over_T, poly_fit_deg);
+    A_piecewise_fit = piecewise_fit(A_over_A_0, t_over_T, poly_fit_deg);
+    A_optimal_fit = optimal_fit(A_over_A_0, t_over_T, poly_fit_deg);
+
+    global_res_w_noise = eval_fit(A_global_fit, A_over_A_0);
+    piecewise_resw_noise = eval_fit(A_piecewise_fit, A_over_A_0);
+    optimal_resw_noise = eval_fit(A_optimal_fit, A_over_A_0);
+end
+
+
+
+
+
