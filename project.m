@@ -5,7 +5,7 @@ f_c = 4.*((t_over_T).^2);
 % pure signal:
 A_over_A_0 = (sin(2.*pi.*f_m*t_over_T).^2).*abs((sin(2.*pi.*f_c.*t_over_T)));
 
-plot(t_over_T, A_over_A_0)
+
 
 % white noise:
 
@@ -25,19 +25,26 @@ e2_noise_numbers = randn([1 length(t_over_T)]); % zero-mean guassian noise for e
 % TODO use hmwk1 function to get the PDF
 
 
-p_x_1 = pdf_est(100, t_over_T, e1_noise_numbers);
+
+[p_x_1, x_1]= pdf_est(300, t_over_T, e1_noise_numbers);
+[p_x_2, x_2] = pdf_est(300, t_over_T, e2_noise_numbers);
 
 figure;
-plot(t_over_T, p_x);
+subplot(2, 1, 1)
+plot(x_1, p_x_1);
+subplot(2, 1, 2)
+plot(x_2, p_x_2);
 
 % A_affected = A~ which is the noise-ily scaled and noise-ily offset signal
 
 a_1 = 0.2;
 a_2 = 0.46;
 A_affected = (1 + a_1.*e1_noise_numbers.*(t_over_T)).*(A_over_A_0) + (a_2.*e2_noise_numbers.*(t_over_T));
-
+figure;
+subplot(2,1,1)
 plot(t_over_T, A_affected)
-
+subplot(2,1,2)
+plot(t_over_T, A_over_A_0)
 % goodness of fit: 
 % normalized root mean squared error (comparison between different sensor ranges)
 
@@ -58,29 +65,28 @@ plot(t_over_T, A_affected)
 % these fits are described in lectures 2/18/25, 2/20/25
 for poly_fit_deg = 1:10
     
-    
-    A_global_fit = global_fit(A_over_A_0, t_over_T, poly_fit_deg);
+    [A_global_fit, p] = global_fit(A_over_A_0, t_over_T, poly_fit_deg);
 
     % piecewise_fit uses the global fit over sub-sets of the data
     % characterized by the width of the windows and the center point
     % distance from the first point (number of points in the window = odd) 
-    A_piecewise_fit = piecewise_fit(A_over_A_0, t_over_T, poly_fit_deg);
+    [A_piecewise_fit, pp] = piecewise_fit(A_over_A_0, t_over_T, poly_fit_deg, 50, 25)
 
     % 
-    A_optimal_fit = optimal_fit(A_over_A_0, t_over_T, poly_fit_deg);
+    %A_optimal_fit = optimal_fit(A_over_A_0, t_over_T, poly_fit_deg);
 
-    global_res_clean = rmse(A_global_fit, A_over_A_0);
-    piecewise_res_clean = rmse(A_piecewise_fit, A_over_A_0);
-    optimal_res_clean = rmse(A_optimal_fit, A_over_A_0);
+    global_res_clean = rmse(A_global_fit, A_over_A_0)
+    piecewise_res_clean = rmse(A_piecewise_fit, A_over_A_0)
+    %optimal_res_clean = rmse(A_optimal_fit, A_over_A_0);
 
 % repeating for noisy data
-    A_global_fit = global_fit(A_over_A_0, t_over_T, poly_fit_deg);
-    A_piecewise_fit = piecewise_fit(A_over_A_0, t_over_T, poly_fit_deg);
-    A_optimal_fit = optimal_fit(A_over_A_0, t_over_T, poly_fit_deg);
+    %[A_global_fit , polynomials_gfit]= global_fit(A_over_A_0, t_over_T, poly_fit_deg);
+    %A_piecewise_fit = piecewise_fit(A_over_A_0, t_over_T, poly_fit_deg, 50, 40)
+    %A_optimal_fit = optimal_fit(A_over_A_0, t_over_T, poly_fit_deg);
 
-    global_res_w_noise = rmse(A_global_fit, A_over_A_0);
-    piecewise_resw_noise = rmse(A_piecewise_fit, A_over_A_0);
-    optimal_resw_noise = rmse(A_optimal_fit, A_over_A_0);
+    %global_res_w_noise = rmse(A_global_fit, A_over_A_0);
+    %piecewise_resw_noise = rmse(A_piecewise_fit, A_over_A_0);
+    %optimal_resw_noise = rmse(A_optimal_fit, A_over_A_0);
 end
 
 
