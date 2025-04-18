@@ -6,8 +6,6 @@ f_c = 4.*((t_over_T).^2);
 % pure signal:
 A_over_A_0 = (sin(2.*pi.*f_m*t_over_T).^2).*abs((sin(2.*pi.*f_c.*t_over_T)));
 
-
-
 % white noise:
 
 % "random vector is considered to be a white noise vector if its 
@@ -95,10 +93,9 @@ for poly_fit_deg = 1:10
     % 
     % start with the piecewise fitting function
     % as the basis along with window width "bounds" (10:10:100) along with a
-    % static center distance width overlap for each bound [center_widths =
-    % (10:10:100)-(1:10)]. the window width is swept to find the width with
-    % the least variances. the entire waveform is split into "optimal
-    % window widths".
+    % static center distance width overlap for each bound center_widths = 50
+    % the window width is swept to find the width with the least variances. 
+    % the entire waveform is split into "optimal window widths".
     % 
     % once the window widths have been selected, each window will have its 
     % variance in slopes between point pairs determeined. these are then 

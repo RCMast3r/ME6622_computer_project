@@ -5,33 +5,14 @@ function [A_res, t, polynomials_a0_am] = piecewise_fit(A_samples, t, fit_dim, wi
 %   min((i + center_increment + (window_width /2)), length(points))]
 
 
-    function windows = window_points(data, m, n)
-    %SELECT_PERIODIC_WINDOWS Selects windows of width m centered at intervals of n
-    %
-    % Inputs:
-    %   data - Input vector (1D)
-    %   n    - Period (distance between window centers)
-    %   m    - Window width (must be odd or even)
-    %
-    % Output:
-    %   windows - Matrix of size (m x num_windows), each column is a window
-        windows = {};
-        i = 1;
-        
-        for i_inner=(center_increment/2):center_increment:(length(data))
-
-            start_ind = i_inner - ((window_width/2))+1;
-            end_ind =i_inner + ((window_width/2));
-            windows{i} = data(:, max(start_ind, 1):min(end_ind, length(data)));
-            i = i+1;
-        end
-
-    end
+    
 
 
 polynomials_a0_am = {};
 
-y_points = window_points(A_samples, window_width, center_increment);
+y_points = window_points(A_samples, window_width, center_increment)
+ret = window_optimal_points(A_samples, 10:2:100, 10:10:100);
+y_points_test = ret.windows;
 x_points = window_points(t, window_width, center_increment);
 A_res_init={};
 t_res={};
